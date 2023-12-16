@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>KDF Structure Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Struct/KDF" class="dashAnchor"></a>
+    <a title="KDF Structure Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">Digest Docs</a> (95% documented)</p>
+        <div class="header-right">
+          <form role="search" action="../search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </div>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">Digest Reference</a>
+        <img id="carat" src="../img/carat.png" alt=""/>
+        KDF Structure Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/MessageDigest.html">MessageDigest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MessageDigest/Kind.html">– Kind</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/HMAC.html">HMAC</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/KDF.html">KDF</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SHAKE.html">SHAKE</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SHAKE/Kind.html">– Kind</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/XOF.html">XOF</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/XOF/Kind.html">– Kind</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Typealiases.html">Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:6Digest4Bytea">Byte</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:6Digest5Bytesa">Bytes</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>KDF</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">KDF</span></code></pre>
+
+                </div>
+              </div>
+            <p>KDF exists to provide a namespace for the three static functions HKDF, X963KDF and MGF1.<br/>
+There is no KDF instances.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Methods"></a>
+                <a name="//apple_ref/swift/Section/Methods" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Methods"></a>
+                  <h3 class="section-name"><span>Methods</span>
+</h3>
+                </div>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Digest3KDFV4HKDFySays5UInt8VGAA07MessageA0C4KindO_AGSiA2GtFZ"></a>
+                    <a name="//apple_ref/swift/Method/HKDF(_:_:_:_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Digest3KDFV4HKDFySays5UInt8VGAA07MessageA0C4KindO_AGSiA2GtFZ">HKDF(_:<wbr>_:<wbr>_:<wbr>_:<wbr>_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The HKDF key derivation function from [RFC-5869].<br/>
+Derives a symmetric key from a shared secret.</p>
+<div class="aside aside-precondition">
+    <p class="aside-title">Precondition</p>
+    0 &lt; <em>size</em> and <em>size</em> &lt;= digestLength * 255
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="kt">HKDF</span><span class="p">(</span><span class="n">_</span> <span class="nv">kind</span><span class="p">:</span> <span class="kt"><a href="../Classes/MessageDigest.html">MessageDigest</a></span><span class="o">.</span><span class="kt">Kind</span><span class="p">,</span> <span class="n">_</span> <span class="nv">ikm</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Digest5Bytesa">Bytes</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">size</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">info</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Digest5Bytesa">Bytes</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">salt</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Digest5Bytesa">Bytes</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Typealiases.html#/s:6Digest5Bytesa">Bytes</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>kind</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The kind of message digest algorithm to use</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>ikm</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The shared secret</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>size</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The required length of the key</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>info</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Information shared with the other party - possibly none</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>salt</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Salt to use - possibly none</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A byte array which is the symmetric key</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Digest3KDFV04X963B0ySays5UInt8VGAA07MessageA0C4KindO_AGSiAGtFZ"></a>
+                    <a name="//apple_ref/swift/Method/X963KDF(_:_:_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Digest3KDFV04X963B0ySays5UInt8VGAA07MessageA0C4KindO_AGSiAGtFZ">X963KDF(_:<wbr>_:<wbr>_:<wbr>_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The ANS X9.63 key derivation function from [SEC 1] section 3.6.1.<br/>
+Derives a symmetric key from a shared secret.</p>
+<div class="aside aside-precondition">
+    <p class="aside-title">Precondition</p>
+    0 &lt;= <em>size</em> and <em>size</em> &lt;= digestLength * (2^32 - 1)
+
+</div>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="kt">X963KDF</span><span class="p">(</span><span class="n">_</span> <span class="nv">kind</span><span class="p">:</span> <span class="kt"><a href="../Classes/MessageDigest.html">MessageDigest</a></span><span class="o">.</span><span class="kt">Kind</span><span class="p">,</span> <span class="n">_</span> <span class="nv">ikm</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Digest5Bytesa">Bytes</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">size</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="n">_</span> <span class="nv">info</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Digest5Bytesa">Bytes</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Typealiases.html#/s:6Digest5Bytesa">Bytes</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>kind</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The kind of message digest algorithm to use</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>ikm</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The shared secret</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>size</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The required length of the key</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>info</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Information shared with the other party - possibly none</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A byte array which is the symmetric key</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:6Digest3KDFV4MGF1ySays5UInt8VGAA07MessageA0C4KindO_AGSitFZ"></a>
+                    <a name="//apple_ref/swift/Method/MGF1(_:_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:6Digest3KDFV4MGF1ySays5UInt8VGAA07MessageA0C4KindO_AGSitFZ">MGF1(_:<wbr>_:<wbr>_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The Mask Generation Function from [RFC 8017].</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="kt">MGF1</span><span class="p">(</span><span class="n">_</span> <span class="nv">kind</span><span class="p">:</span> <span class="kt"><a href="../Classes/MessageDigest.html">MessageDigest</a></span><span class="o">.</span><span class="kt">Kind</span><span class="p">,</span> <span class="n">_</span> <span class="nv">seed</span><span class="p">:</span> <span class="kt"><a href="../Typealiases.html#/s:6Digest5Bytesa">Bytes</a></span><span class="p">,</span> <span class="n">_</span> <span class="nv">size</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Typealiases.html#/s:6Digest5Bytesa">Bytes</a></span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>kind</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The kind of message digest algorithm to use</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>seed</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The seed to generate the mask from</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>size</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The required length of the generated mask</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>The generated mask</p>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2023 <a class="link" href="" target="_blank" rel="external noopener"></a>. All rights reserved. (Last updated: 2023-12-15)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</html>

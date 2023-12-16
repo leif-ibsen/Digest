@@ -1,0 +1,19 @@
+{
+  "warnings": [
+    {
+      "file": "/Users/leifibsen/Documents/SwiftXcode/Digest/Sources/Digest/MD.swift",
+      "line": 19,
+      "symbol": "Byte",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/leifibsen/Documents/SwiftXcode/Digest/Sources/Digest/MD.swift",
+      "line": 20,
+      "symbol": "Bytes",
+      "symbol_kind": "source.lang.swift.decl.typealias",
+      "warning": "undocumented"
+    }
+  ],
+  "source_directory": "/Users/leifibsen/Documents/SwiftXcode/Digest"
+}
