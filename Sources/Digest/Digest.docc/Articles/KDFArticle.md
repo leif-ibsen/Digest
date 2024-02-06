@@ -3,11 +3,13 @@
 ## 
 
 A key derivation function generates a symmetric key from a shared secret. There are two key derivation functions:
+
 * HKDF as specified in [RFC 5859]
 * X963KDF as specified in [SEC 1].
-Both are static methods in the KDF structure.
 
-### Example:
+Both are static methods in the ``Digest/KDF`` structure.
+
+### Example
 
 ```swift
 import Digest

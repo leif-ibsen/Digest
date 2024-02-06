@@ -38,7 +38,7 @@ struct SHAKEimpl {
 
 }
 
-/// Extendable output functions SHAKE128 and SHAKE256 as defined in [FIPS 202]
+/// The SHAKE structure
 public struct SHAKE {
     
     /// Enumeration of SHAKE kinds
@@ -76,11 +76,11 @@ public struct SHAKE {
         self.shake.update(data)
     }
 
-    /// Computes the digested value and resets *self* to its original state
+    /// Computes the digest value and resets `self` to its original state
     ///
     /// - Parameters:
-    ///   - size: The size of the digested value
-    /// - Returns: The digested value
+    ///   - size: The size of the digest value
+    /// - Returns: The digest value
     public func digest(_ size: Int) -> Bytes {
         return self.shake.digest(size)
     }

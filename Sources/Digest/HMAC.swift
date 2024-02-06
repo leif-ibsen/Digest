@@ -5,7 +5,7 @@
 //  Created by Leif Ibsen on 24/11/2023.
 //
 
-/// The Keyed-Hash Message Authentication Code as defined in [FIPS-198]
+/// The HMAC structure
 public struct HMAC {
     
     static let OPAD = Byte(0x5c)
@@ -55,7 +55,7 @@ public struct HMAC {
 
     // MARK: Methods
 
-    /// Resets *self* to its original state
+    /// Resets `self` to its original state
     public func reset() {
         self.md.reset()
         self.md.update(self.iKeyPad)
@@ -69,7 +69,7 @@ public struct HMAC {
         self.md.update(data)
     }
 
-    /// Computes the message authentication code
+    /// Computes the message authentication code and resets `self` to its original state
     ///
     /// - Parameters:
     ///   - data: Data to digest before the message authentication code is computed - an empty array is default

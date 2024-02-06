@@ -1,5 +1,10 @@
 # ``Digest/KDF``
 
+## Overview
+
+KDF exists to provide a namespace for the three static functions HKDF, X963KDF and MGF1.  
+There is no KDF instances.
+
 ## Topics
 
 ### Static Methods

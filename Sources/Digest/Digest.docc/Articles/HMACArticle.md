@@ -2,9 +2,9 @@
 
 ## 
 
-Using HMAC to generate a message authentication code is a three step operation.
+Using ``Digest/HMAC`` to generate a message authentication code is a three step operation.
 
-### Example:
+### Example
 
 ```swift
 import Digest
@@ -17,7 +17,7 @@ hmac.update([1, 2, 3])
 
 // 3. compute the code
 let code = hmac.compute()
-    print(code)
+print(code)
 ```
 giving:
 ```swift

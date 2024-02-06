@@ -5,10 +5,7 @@
 //  Created by Leif Ibsen on 30/11/2023.
 //
 
-///
-/// KDF exists to provide a namespace for the three static functions HKDF, X963KDF and MGF1.<br/>
-/// There is no KDF instances.
-///
+/// The KDF structure
 public struct KDF {
     
     private init() {
@@ -18,10 +15,11 @@ public struct KDF {
 
     // MARK: Methods
 
-    /// The HKDF key derivation function from [RFC-5869].<br/>
+    /// The HKDF key derivation function from [RFC 5869].
+    ///
     /// Derives a symmetric key from a shared secret.
     ///
-    /// - Precondition: 0 < *size* and *size* <= digestLength * 255
+    /// - Precondition: 0 < `size` and `size` <= digestLength \* 255
     /// - Parameters:
     ///   - kind: The kind of message digest algorithm to use
     ///   - ikm: The shared secret
@@ -45,10 +43,11 @@ public struct KDF {
         return Bytes(T[0 ..< size])
     }
 
-    /// The ANS X9.63 key derivation function from [SEC 1] section 3.6.1.<br/>
+    /// The ANS X9.63 key derivation function from [SEC 1] section 3.6.1.
+    ///
     /// Derives a symmetric key from a shared secret.
     ///
-    /// - Precondition: 0 <= *size* and *size* <= digestLength * (2^32 - 1)
+    /// - Precondition: 0 <= `size` and `size` <= digestLength \* (2^32 - 1)
     /// - Parameters:
     ///   - kind: The kind of message digest algorithm to use
     ///   - ikm: The shared secret

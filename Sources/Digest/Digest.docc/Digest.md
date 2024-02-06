@@ -11,7 +11,7 @@ The Digest package provides the following functionality:
 * Mask Generation Function - MGF1
 
 > Important:
-Digest requires Swift 5.0. It also requires that the Int and UInt types be 64 bit types.
+Digest requires Swift 5.0. It also requires that the `Int` and `UInt` types be 64 bit types.
 
 ## Topics
 

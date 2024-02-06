@@ -4,7 +4,7 @@
 
 Message digesting is a three step operation.
 
-### Example:
+### Example
 
 ```swift
 import Digest

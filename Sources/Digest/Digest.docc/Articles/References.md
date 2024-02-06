@@ -2,7 +2,7 @@
 
 ## 
 
-Algorithms from the following RFC's have been used in the implementation.
+Algorithms from the following documents have been used in the implementation.  
 There are references in the source code where appropriate.
 
 * [FIPS 180] - FIPS PUB 180-4: Secure Hash Standard (SHS), August 2015

@@ -42,7 +42,7 @@ class XOFimpl {
     
 }
 
-/// Extendable output functions XOF128 and XOF256 which are variants of SHAKE128 and SHAKE256
+/// The XOF structure
 public struct XOF {
     
     /// Enumeration of XOF kinds
@@ -73,19 +73,19 @@ public struct XOF {
 
     // MARK: Methods
 
-    /// Reads bytes from *self*
+    /// Reads bytes from `self`
     ///
     /// - Parameters:
     ///   - size: The size of the returned value
-    /// - Returns: The next *size* bytes
+    /// - Returns: The next `size` bytes
     public func read(_ size: Int) -> Bytes {
         return xof.read(size)
     }
 
-    /// Reads bytes from *self*
+    /// Reads bytes from `self`
     ///
     /// - Parameters:
-    ///   - buffer: Gets filled with the next *buffer.count* bytes
+    ///   - buffer: Gets filled with the next `buffer.count` bytes
     public func read(_ buffer: inout Bytes) {
         self.xof.read(&buffer)
     }

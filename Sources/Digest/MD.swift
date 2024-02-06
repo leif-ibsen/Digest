@@ -19,7 +19,7 @@ protocol MDImplementation {
 public typealias Byte = UInt8
 public typealias Bytes = [UInt8]
 
-/// SHA1, SHA2 and SHA3 message digests
+/// The MessageDigest class
 public class MessageDigest {
 
     /// Enumeration of message digest algorithms
@@ -172,7 +172,7 @@ public class MessageDigest {
 
     // MARK: Methods
 
-    /// Resets *self* to its original state
+    /// Resets `self` to its original state
     public func reset() {
         for i in 0 ..< self.buffer.count {
             self.buffer[i] = 0
@@ -215,11 +215,11 @@ public class MessageDigest {
         self.totalBytes += data.count
     }
 
-    /// Computes the digested value and resets *self* to its original state
+    /// Computes the digest value and resets `self` to its original state
     ///
     /// - Parameters:
     ///   - data: Data to digest before the digest value is computed - an empty array is default
-    /// - Returns: The digested value
+    /// - Returns: The digest value
     public func digest(_ data: Bytes = []) -> Bytes {
         self.update(data)
         var md = Bytes(repeating: 0, count: self.digestLength)

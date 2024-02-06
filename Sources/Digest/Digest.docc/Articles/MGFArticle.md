@@ -2,10 +2,10 @@
 
 ## 
 
-The mask generation function MGF1 as specified in [RFC 8017], is a static method in the KDF structure.
+The mask generation function MGF1 as specified in [RFC 8017], is a static method in the ``Digest/KDF`` structure.  
 It generates a mask of a specified size from a specified message digest and seed.
 
-### Example:
+### Example
 
 ```swift
 import Digest
