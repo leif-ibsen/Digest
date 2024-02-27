@@ -1,9 +1,8 @@
 # References
 
-## 
+Algorithms from the following documents have been used in the implementation
 
-Algorithms from the following documents have been used in the implementation.  
-There are references in the source code where appropriate.
+## 
 
 * [FIPS 180] - FIPS PUB 180-4: Secure Hash Standard (SHS), August 2015
 * [FIPS 198] - FIPS PUB 198-1: The Keyed-Hash Message Authentication Code, July 2008

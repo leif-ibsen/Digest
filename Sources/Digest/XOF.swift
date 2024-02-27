@@ -45,7 +45,7 @@ class XOFimpl {
 /// The XOF structure
 public struct XOF {
     
-    /// Enumeration of XOF kinds
+    /// The XOF kinds
     public enum Kind: CaseIterable {
         
         /// XOF128

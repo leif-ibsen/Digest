@@ -16,13 +16,16 @@ protocol MDImplementation {
     func padding(_ totalBytes: Int, _ blockSize: Int) -> Bytes
 }
 
+/// Unsigned 8 bit value
 public typealias Byte = UInt8
+
+/// Array of unsigned 8 bit values
 public typealias Bytes = [UInt8]
 
 /// The MessageDigest class
 public class MessageDigest {
 
-    /// Enumeration of message digest algorithms
+    /// The message digest algorithms
     public enum Kind: CaseIterable {
         
         /// SHA1 Message Digest

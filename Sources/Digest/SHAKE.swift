@@ -41,7 +41,7 @@ struct SHAKEimpl {
 /// The SHAKE structure
 public struct SHAKE {
     
-    /// Enumeration of SHAKE kinds
+    /// The SHAKE kinds
     public enum Kind: CaseIterable {
         
         /// SHAKE128
