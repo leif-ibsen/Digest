@@ -60,7 +60,7 @@ public struct SHAKE {
     /// Constructs a SHAKE instance of a specified kind
     ///
     /// - Parameters:
-    ///   - kind: The SHAKE kind
+    ///   - kind: The SHAKE kind, `.SHAKE128` or `.SHAKE256`
     public init(_ kind: Kind) {
         self.shake = kind == .SHAKE128 ? SHAKEimpl(MessageDigest( /* SHA3-128 */ )) : SHAKEimpl(MessageDigest(.SHA3_256))
     }

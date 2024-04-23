@@ -64,7 +64,7 @@ public struct XOF {
     /// Constructs a XOF instance of a specified kind
     ///
     /// - Parameters:
-    ///   - kind: The XOF kind
+    ///   - kind: The XOF kind, `.XOF128` or `.XOF256`
     ///   - seed: The seed the XOF is based on
     public init(_ kind: Kind, _ seed: Bytes) {
         self.xof = kind == .XOF128 ? XOFimpl(MessageDigest( /* SHA3-128 */ ), seed) : XOFimpl(MessageDigest(.SHA3_256), seed)
