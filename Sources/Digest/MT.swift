@@ -140,11 +140,31 @@ public class MT: RandomNumberGenerator {
             return range.lowerBound
         }
         let n = 2 * (Double(range.upperBound) - Double(range.lowerBound))
+        if n == 0.0 {
+
+            // upperBound and lowerBound convert to the same Double value
+
+            return range.lowerBound + randomInt(in: 0 ... range.upperBound - range.lowerBound)
+        }
         let f = randomFloat(in: -1.0 / n ... (n + 1.0) / n)
+        var x: Int
         if range.upperBound > 0 && range.lowerBound < 0 {
-            return Int(Double(range.lowerBound) + ((Double(range.upperBound) - Double(range.lowerBound)) * f).rounded(.toNearestOrEven))
+            x = Int(Double(range.lowerBound) + ((Double(range.upperBound) - Double(range.lowerBound)) * f).rounded(.toNearestOrEven))
         } else {
-            return range.lowerBound - Int((Double(range.lowerBound - range.upperBound) * f).rounded(.toNearestOrEven))
+            x = range.lowerBound - Int((Double(range.lowerBound - range.upperBound) * f).rounded(.toNearestOrEven))
+        }
+        if x > range.upperBound {
+
+            // May happen in extremely rare cases due to floating point rounding to even
+
+            return range.upperBound
+        } else if x < range.lowerBound {
+
+            // May happen in extremely rare cases due to floating point rounding to even
+
+            return range.lowerBound
+        } else {
+            return x
         }
     }
 
@@ -154,16 +174,7 @@ public class MT: RandomNumberGenerator {
     ///   - range: A closed range
     /// - Returns: A random 32 bit integer in the specified range
     public func randomInt(in range: ClosedRange<Int32>) -> Int32 {
-        if range.lowerBound == range.upperBound {
-            return range.lowerBound
-        }
-        let n = 2 * (Double(range.upperBound) - Double(range.lowerBound))
-        let f = randomFloat(in: -1.0 / n ... (n + 1.0) / n)
-        if range.upperBound > 0 && range.lowerBound < 0 {
-            return Int32(Double(range.lowerBound) + ((Double(range.upperBound) - Double(range.lowerBound)) * f).rounded(.toNearestOrEven))
-        } else {
-            return range.lowerBound - Int32((Double(range.lowerBound - range.upperBound) * f).rounded(.toNearestOrEven))
-        }
+        return Int32(randomInt(in: Int(range.lowerBound) ... Int(range.upperBound)))
     }
 
     /// Random 64 bit integer value
@@ -172,16 +183,7 @@ public class MT: RandomNumberGenerator {
     ///   - range: A closed range
     /// - Returns: A random 64 bit integer in the specified range
     public func randomInt(in range: ClosedRange<Int64>) -> Int64 {
-        if range.lowerBound == range.upperBound {
-            return range.lowerBound
-        }
-        let n = 2 * (Double(range.upperBound) - Double(range.lowerBound))
-        let f = randomFloat(in: -1.0 / n ... (n + 1.0) / n)
-        if range.upperBound > 0 && range.lowerBound < 0 {
-            return Int64(Double(range.lowerBound) + ((Double(range.upperBound) - Double(range.lowerBound)) * f).rounded(.toNearestOrEven))
-        } else {
-            return range.lowerBound - Int64((Double(range.lowerBound - range.upperBound) * f).rounded(.toNearestOrEven))
-        }
+        return Int64(randomInt(in: Int(range.lowerBound) ... Int(range.upperBound)))
     }
 
     /// Random unsigned integer value
@@ -195,7 +197,20 @@ public class MT: RandomNumberGenerator {
         }
         let n = 2 * (Double(range.upperBound - range.lowerBound))
         let f = randomFloat(in: -1.0 / n ... (n + 1.0) / n)
-        return range.lowerBound + UInt((Double(range.upperBound - range.lowerBound) * f).rounded(.toNearestOrEven))
+        let x = range.lowerBound + UInt((Double(range.upperBound - range.lowerBound) * f).rounded(.toNearestOrEven))
+        if x > range.upperBound {
+
+            // May happen in extremely rare cases due to floating point rounding to even
+
+            return range.upperBound
+        } else if x < range.lowerBound {
+
+            // May happen in extremely rare cases due to floating point rounding to even
+
+            return range.lowerBound
+        } else {
+            return x
+        }
     }
 
     /// Random unsigned 32 bit integer value
@@ -204,12 +219,7 @@ public class MT: RandomNumberGenerator {
     ///   - range: A closed range
     /// - Returns: A random unsigned 32 bit integer in the specified range
     public func randomUInt(in range: ClosedRange<UInt32>) -> UInt32 {
-        if range.lowerBound == range.upperBound {
-            return range.lowerBound
-        }
-        let n = 2 * (Double(range.upperBound - range.lowerBound))
-        let f = randomFloat(in: -1.0 / n ... (n + 1.0) / n)
-        return range.lowerBound + UInt32((Double(range.upperBound - range.lowerBound) * f).rounded(.toNearestOrEven))
+        return UInt32(randomUInt(in: UInt(range.lowerBound) ... UInt(range.upperBound)))
     }
 
     /// Random unsigned 64 bit integer value
@@ -218,12 +228,7 @@ public class MT: RandomNumberGenerator {
     ///   - range: A closed range
     /// - Returns: A random unsigned 64 bit integer in the specified range
     public func randomUInt(in range: ClosedRange<UInt64>) -> UInt64 {
-        if range.lowerBound == range.upperBound {
-            return range.lowerBound
-        }
-        let n = 2 * (Double(range.upperBound - range.lowerBound))
-        let f = randomFloat(in: -1.0 / n ... (n + 1.0) / n)
-        return range.lowerBound + UInt64((Double(range.upperBound - range.lowerBound) * f).rounded(.toNearestOrEven))
+        return UInt64(randomUInt(in: UInt(range.lowerBound) ... UInt(range.upperBound)))
     }
 
     /// Random floating point value
