@@ -2,6 +2,8 @@
 
 The Digest package provides the following functionality:
 
+* Base64 encoding of bytes to text strings and the reverse decoding
+* Base64 PEM encoding and decoding typically used to encode and decode cryptographic keys
 * Message Digest algorithms - SHA1, SHA2 and SHA3
 * Extendable Output Functions - SHAKE and XOF
 * Hash Based Message Authentication Codes - HMAC
