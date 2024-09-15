@@ -8,7 +8,7 @@ Base64 exists to provide a namespace. It contains static methods for Base64 enco
 
 ### Methods
 
-- ``encode(_:)``
+- ``encode(_:_:)``
 - ``decode(_:)``
-- ``pemEncode(_:_:)``
+- ``pemEncode(_:_:_:)``
 - ``pemDecode(_:_:)``

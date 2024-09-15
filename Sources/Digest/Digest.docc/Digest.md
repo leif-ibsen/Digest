@@ -51,7 +51,7 @@ SF2u79k8TD5J
 
 let der = Base64.pemDecode(pem, "PUBLIC KEY")!
 
-// der is the ASN1 DER encoding of the key from which the key could be recreated
+// ´der´ is the ASN1 DER encoding of the key from which the key could be recreated
 print(der)
 ```
 
@@ -289,7 +289,7 @@ To use Digest, in your project Package.swift file add a dependency like
 
 ```swift
 dependencies: [
-  package(url: "https://github.com/leif-ibsen/Digest", from: "1.7.0"),
+  package(url: "https://github.com/leif-ibsen/Digest", from: "1.8.0"),
 ]
 ```
 

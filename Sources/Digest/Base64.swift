@@ -8,7 +8,6 @@
 /// The Base64 structure
 public struct Base64 {
     
-    static let linesize = 76
     static let base64chars = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
                         "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f",
                         "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
@@ -23,10 +22,13 @@ public struct Base64 {
 
     /// Base64 encodes a byte array
     ///
+    /// - Precondition: linesize is positive and a multiplum of 4
     /// - Parameters:
     ///   - input: Bytes to encode
+    ///   - linesize: Number of characters per line, default is 76
     /// - Returns: The Base64 encoding of `input`
-    public static func encode(_ input: Bytes) -> String {
+    public static func encode(_ input: Bytes, _ linesize: Int = 76) -> String {
+        precondition(linesize > 0 && linesize % 4 == 0)
         var base64 = ""
         var i = 0
         var k = 0
@@ -134,12 +136,14 @@ public struct Base64 {
     
     /// PEM encodes a byte array
     ///
+    /// - Precondition: linesize is positive and a multiplum of 4
     /// - Parameters:
     ///   - input: Bytes to encode
     ///   - pem: The PEM header- and footer string
+    ///   - linesize: Number of characters per line, default is 76
     /// - Returns: The Base64 PEM encoding of `input`
-    public static func pemEncode(_ input: Bytes, _ pem: String) -> String {
-        return "-----BEGIN " + pem + "-----\n" + encode(input) + "\n-----END " + pem + "-----"
+    public static func pemEncode(_ input: Bytes, _ pem: String, _ linesize: Int = 76) -> String {
+        return "-----BEGIN " + pem + "-----\n" + encode(input, linesize) + "\n-----END " + pem + "-----"
     }
 
     /// PEM decodes a string
