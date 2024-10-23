@@ -17,8 +17,8 @@ final class XOFTest: XCTestCase {
         let output: Bytes
 
         init(seed: String, output: String) {
-            self.seed = Util.hex2bytes(seed)
-            self.output = Util.hex2bytes(output)
+            self.seed = Base64.hex2bytes(seed)!
+            self.output = Base64.hex2bytes(output)!
         }
     }
     

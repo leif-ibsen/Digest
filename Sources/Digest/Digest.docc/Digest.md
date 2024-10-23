@@ -1,6 +1,6 @@
 # ``Digest``
 
-Digest and random number utilities
+Digest utilities
 
 ## Overview
 
@@ -8,12 +8,12 @@ The Digest package provides the following functionality:
 
 * Base64 encoding of bytes to text strings and the reverse decoding
 * Base64 PEM encoding and decoding typically used to encode and decode cryptographic keys
+* Conversion between byte arrays and hexadecimal strings
 * Message Digest algorithms - SHA1, SHA2 and SHA3
 * Extendable Output Functions - SHAKE and XOF
 * Hash Based Message Authentication Codes - HMAC
 * Key Derivation Functions - HKDF and X963KDF
 * Mask Generation Function - MGF1
-* Random number generation using the Mersenne Twister algorithm
 
 ### Base64
 
@@ -206,90 +206,13 @@ giving:
 [224, 166, 61, 124, 140, 77, 129, 205, 28, 5, 103, 191]
 ```
 
-### Random Numbers
-
-The MT class generates random numbers. There are two MT versions:
-
-* One that uses the 32 bit Mersenne Twister algorithm
-* One that uses the 64 bit Mersenne Twister algorithm
-
-MT conforms to the `RandomNumberGenerator` protocol. It generates:
-
-* Random bits
-* Random integers in a specified open or closed interval
-* Random unsigned integers in a specified open or closed interval
-* Random floating point values in a specified open or closed interval
-
-A generator instance must be instantiated either with a randomly generated seed value or with a specified seed or seed array.
-The sequence of generated numbers is deterministic and depends solely on the initial seed.
-
-The internal state of a generator instance can be saved with the `getState` method and reinstated later with the `setState` method.
-
-**Example 1**
-
-```swift
-import Digest
-
-// 32 bit version, randomly generated seed
-let mt32 = MT(kind: .MT32)
-
-let theState = mt32.getState()
-for _ in 0 ..< 3 {
-  print(mt32.randomInt(in: 0 ..< 100))
-}
-mt32.setState(state: theState)
-print("After reinstate")
-for _ in 0 ..< 3 {
-  print(mt32.randomInt(in: 0 ..< 100))
-}
-```
-giving (for example):
-```swift
-24
-75
-33
-After reinstate
-24
-75
-33
-```
-
-**Example 2**
-
-```swift
-import Digest
-
-// 64 bit version, seed array = [123, 456, 789]
-let mt64 = MT(kind: .MT64, seed: [123, 456, 789])
-
-for _ in 0 ..< 10 {
-    print(mt64.randomInt(in: -1000 ... 1000))
-}
-```
-giving:
-```swift
-781
-570
--403
-29
--924
--368
-553
--60
-989
-418
-```
-
-> Important:
-`MT` is not suitable for cryptographic applications.
-
 ### Usage
 
 To use Digest, in your project Package.swift file add a dependency like
 
 ```swift
 dependencies: [
-  package(url: "https://github.com/leif-ibsen/Digest", from: "1.8.0"),
+  package(url: "https://github.com/leif-ibsen/Digest", from: "1.9.0"),
 ]
 ```
 
@@ -303,7 +226,6 @@ Digest requires Swift 5.0. It also requires that the `Int` and `UInt` types be 6
 ### Classes
 
 - ``Digest/MessageDigest``
-- ``Digest/MT``
 
 ### Structures
 

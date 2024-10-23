@@ -5,6 +5,8 @@
 //  Created by Leif Ibsen on 06/09/2024.
 //
 
+import Foundation
+
 /// The Base64 structure
 public struct Base64 {
     
@@ -158,6 +160,58 @@ public struct Base64 {
             return nil
         }
         return decode(parts[2])
+    }
+
+    /// Converts a hexadecimal string to the corresponding byte array
+    ///
+    /// - Parameters:
+    ///   - hex: A string containing an even number of hexadecimal digits - `0..9`, `a..f`, `A..F`
+    /// - Returns: The byte array corresponding `hex` or `nil` if the input is malformed
+    public static func hex2bytes(_ hex: String) -> Bytes? {
+        guard hex.count & 1 == 0 else {
+            return nil
+        }
+        var b: Bytes = []
+        var odd = false
+        var x = Byte(0)
+        var y = Byte(0)
+        for c in hex {
+            switch c {
+            case "0" ... "9":
+                x = c.asciiValue! - 48
+            case "a" ... "f":
+                x = c.asciiValue! - 97 + 10
+            case "A" ... "F":
+                x = c.asciiValue! - 65 + 10
+            default:
+                return nil
+            }
+            if odd {
+                b.append(y << 4 + x)
+            } else {
+                y = x
+            }
+            odd = !odd
+        }
+        return b
+    }
+
+    /// Converts a byte array to the corresponding hexadecimal string
+    ///
+    /// - Parameters:
+    ///   - bytes: The byte array to convert
+    ///   - lowerCase: If `true` use `a..f` else use `A..F`, default is `true`
+    /// - Returns: The hexadecimal string corresponding to `bytes`
+    public static func bytes2hex(_ bytes: Bytes, _ lowerCase: Bool = true) -> String {
+        let hexDigits = lowerCase ?
+            ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"] :
+            ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]
+        var hex = ""
+        for b in bytes {
+            hex.append(hexDigits[Int(b >> 4)])
+            hex.append(hexDigits[Int(b & 0xf)])
+        }
+        return hex
     }
 
 }

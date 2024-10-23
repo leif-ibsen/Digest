@@ -9,7 +9,6 @@ The Digest package provides the following functionality:
 * Hash Based Message Authentication Codes - HMAC
 * Key Derivation Functions - HKDF and X963KDF
 * Mask Generation Function - MGF1
-* Random number generation using the Mersenne Twister algorithm
 
 Digest requires Swift 5.0. It also requires that the `Int` and `UInt` types be 64 bit types.
 

@@ -22,11 +22,11 @@ final class HKDFTest: XCTestCase {
 
         init(kind: MessageDigest.Kind, ikm: String, salt: String, info: String, size: Int, okm: String) {
             self.kind = kind
-            self.ikm = Util.hex2bytes(ikm)
-            self.salt = Util.hex2bytes(salt)
-            self.info = Util.hex2bytes(info)
+            self.ikm = Base64.hex2bytes(ikm)!
+            self.salt = Base64.hex2bytes(salt)!
+            self.info = Base64.hex2bytes(info)!
             self.size = size
-            self.okm = Util.hex2bytes(okm)
+            self.okm = Base64.hex2bytes(okm)!
         }
     }
     
@@ -142,10 +142,10 @@ final class HKDFTest: XCTestCase {
 
         init(kind: MessageDigest.Kind, ikm: String, info: String, size: Int, okm: String) {
             self.kind = kind
-            self.ikm = Util.hex2bytes(ikm)
-            self.info = Util.hex2bytes(info)
+            self.ikm = Base64.hex2bytes(ikm)!
+            self.info = Base64.hex2bytes(info)!
             self.size = size
-            self.okm = Util.hex2bytes(okm)
+            self.okm = Base64.hex2bytes(okm)!
         }
     }
 
