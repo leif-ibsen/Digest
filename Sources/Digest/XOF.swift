@@ -75,10 +75,12 @@ public struct XOF {
 
     /// Reads bytes from `self`
     ///
+    /// - Precondition: `size` is not negative
     /// - Parameters:
     ///   - size: The size of the returned value
     /// - Returns: The next `size` bytes
     public func read(_ size: Int) -> Bytes {
+        precondition(size >= 0)
         return xof.read(size)
     }
 

@@ -221,7 +221,7 @@ public class MessageDigest {
     /// Computes the digest value and resets `self` to its original state
     ///
     /// - Parameters:
-    ///   - data: Data to digest before the digest value is computed - an empty array is default
+    ///   - data: Data to digest before the digest value is computed, default is an empty array
     /// - Returns: The digest value
     public func digest(_ data: Bytes = []) -> Bytes {
         self.update(data)

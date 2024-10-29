@@ -78,10 +78,12 @@ public struct SHAKE {
 
     /// Computes the digest value and resets `self` to its original state
     ///
+    /// - Precondition: `size` is not negative
     /// - Parameters:
     ///   - size: The size of the digest value
     /// - Returns: The digest value
     public func digest(_ size: Int) -> Bytes {
+        precondition(size >= 0)
         return self.shake.digest(size)
     }
 

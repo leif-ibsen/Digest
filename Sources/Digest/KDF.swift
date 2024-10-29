@@ -19,7 +19,7 @@ public struct KDF {
     ///
     /// Derives a symmetric key from a shared secret.
     ///
-    /// - Precondition: 0 < `size` and `size` <= digestLength \* 255
+    /// - Precondition: 0 < `size` and `size` <= `digestLength` * 255
     /// - Parameters:
     ///   - kind: The kind of message digest algorithm to use
     ///   - ikm: The shared secret
@@ -47,7 +47,7 @@ public struct KDF {
     ///
     /// Derives a symmetric key from a shared secret.
     ///
-    /// - Precondition: 0 <= `size` and `size` <= digestLength \* (2^32 - 1)
+    /// - Precondition: 0 <= `size` and `size` <= `digestLength` * (2^32 - 1)
     /// - Parameters:
     ///   - kind: The kind of message digest algorithm to use
     ///   - ikm: The shared secret
@@ -81,12 +81,14 @@ public struct KDF {
 
     /// The Mask Generation Function from [RFC 8017].
     ///
+    /// - Precondition: `size` is not negative
     /// - Parameters:
     ///   - kind: The kind of message digest algorithm to use
     ///   - seed: The seed to generate the mask from
     ///   - size: The required length of the generated mask
     /// - Returns: The generated mask
     public static func MGF1(_ kind: MessageDigest.Kind, _ seed: Bytes, _ size: Int) -> Bytes {
+        precondition(size >= 0)
         let md = MessageDigest(kind)
         var t: Bytes = []
         var counter: Bytes = [0, 0, 0, 0]

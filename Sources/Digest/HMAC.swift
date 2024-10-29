@@ -72,7 +72,7 @@ public struct HMAC {
     /// Computes the message authentication code and resets `self` to its original state
     ///
     /// - Parameters:
-    ///   - data: Data to digest before the message authentication code is computed - an empty array is default
+    ///   - data: Data to digest before the message authentication code is computed, default is an empty array
     /// - Returns: The message authentication code
     public func compute(_ data: Bytes = []) -> Bytes {
         self.md.update(data)

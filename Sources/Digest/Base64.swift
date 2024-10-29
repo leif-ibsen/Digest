@@ -24,7 +24,7 @@ public struct Base64 {
 
     /// Base64 encodes a byte array
     ///
-    /// - Precondition: linesize is positive and a multiplum of 4
+    /// - Precondition: `linesize` is positive and a multiplum of 4
     /// - Parameters:
     ///   - input: Bytes to encode
     ///   - linesize: Number of characters per line, default is 76
@@ -138,7 +138,7 @@ public struct Base64 {
     
     /// PEM encodes a byte array
     ///
-    /// - Precondition: linesize is positive and a multiplum of 4
+    /// - Precondition: `linesize` is positive and a multiplum of 4
     /// - Parameters:
     ///   - input: Bytes to encode
     ///   - pem: The PEM header- and footer string
@@ -166,7 +166,7 @@ public struct Base64 {
     ///
     /// - Parameters:
     ///   - hex: A string containing an even number of hexadecimal digits - `0..9`, `a..f`, `A..F`
-    /// - Returns: The byte array corresponding `hex` or `nil` if the input is malformed
+    /// - Returns: The byte array corresponding to `hex` or `nil` if the input is malformed
     public static func hex2bytes(_ hex: String) -> Bytes? {
         guard hex.count & 1 == 0 else {
             return nil
