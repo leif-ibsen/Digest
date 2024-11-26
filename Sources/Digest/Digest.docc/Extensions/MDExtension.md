@@ -16,6 +16,6 @@ Implements the SHA1, SHA2 (224 / 256 / 384 / 512) and SHA3 (224 / 256 / 384 / 51
 
 ### Methods
 
-- ``reset()``
 - ``update(_:)``
 - ``digest(_:)``
+- ``reset()``
