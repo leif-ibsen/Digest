@@ -10,7 +10,7 @@ import XCTest
 
 final class XOFTest: XCTestCase {
 
-    // NIST test vectors
+    // NIST CAVP test vectors
 
     struct testStruct {
         let seed: Bytes
@@ -66,12 +66,24 @@ final class XOFTest: XCTestCase {
             let xof1 = XOF(.XOF128, t.seed)
             xof1.read(&x)
             XCTAssertEqual(x, t.output)
+
+            // Split in two
+            
             var x1 = Bytes(repeating: 0, count: x.count / 2)
             var x2 = Bytes(repeating: 0, count: x.count - x1.count)
             let xof2 = XOF(.XOF128, t.seed)
             xof2.read(&x1)
             xof2.read(&x2)
             XCTAssertEqual(x, x1 + x2)
+            
+            // One byte at a time
+            
+            let xof3 = XOF(.XOF128, t.seed)
+            var x3: Bytes = []
+            for _ in 0 ..< t.output.count {
+                x3 += xof3.read(1)
+            }
+            XCTAssertEqual(x, x3)
         }
     }
 
@@ -81,12 +93,24 @@ final class XOFTest: XCTestCase {
             let xof1 = XOF(.XOF256, t.seed)
             xof1.read(&x)
             XCTAssertEqual(x, t.output)
+            
+            // Split in two
+
             var x1 = Bytes(repeating: 0, count: x.count / 2)
             var x2 = Bytes(repeating: 0, count: x.count - x1.count)
             let xof2 = XOF(.XOF256, t.seed)
             xof2.read(&x1)
             xof2.read(&x2)
             XCTAssertEqual(x, x1 + x2)
+            
+            // One byte at a time
+            
+            let xof3 = XOF(.XOF256, t.seed)
+            var x3: Bytes = []
+            for _ in 0 ..< t.output.count {
+                x3 += xof3.read(1)
+            }
+            XCTAssertEqual(x, x3)
         }
     }
 

@@ -22,7 +22,7 @@ To use Digest, in your project Package.swift file add a dependency like
 
 ```swift
 dependencies: [
-  package(url: "https://github.com/leif-ibsen/Digest", from: "1.11.0"),
+  package(url: "https://github.com/leif-ibsen/Digest", from: "1.12.0"),
 ]
 ```
 
@@ -61,4 +61,5 @@ Digest requires Swift 5.0. It also requires that the `Int` and `UInt` types be 6
 - <doc:AboutHMAC>
 - <doc:AboutBase64>
 - <doc:AboutConversion>
+- <doc:Performance>
 - <doc:References>

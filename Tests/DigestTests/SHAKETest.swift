@@ -10,7 +10,7 @@ import XCTest
 
 final class SHAKETest: XCTestCase {
 
-    // NIST test vectors
+    // NIST CAVP test vectors
 
     struct testStruct {
         let seed: Bytes
@@ -34,6 +34,18 @@ final class SHAKETest: XCTestCase {
         testStruct(
             seed: "d9e8",
             output: "c7211512340734235bb8d3c4651495aa"
+        ),
+        testStruct(
+            seed: "7bf2fef375bcaff3",
+            output: "5ef5578b89c50532131b7843de7329a3"
+        ),
+        testStruct(
+            seed: "f8fe47cdc43511636f316ab2b40f0968198fc0de2175529dc32f",
+            output: "a92b196b0ac4077b58e134852fad841a"
+        ),
+        testStruct(
+            seed: "f2f64383bdce4def1a1697e8e6c68b40834a32edd77b55a497cfe2a9c5cc90e577c3c639dbba",
+            output: "90b213c6c7dc5e37020e3c0f17e0704d"
         ),
         testStruct(
             seed: "29d97029326800f97f8db0d37078f91c6e3cb21e2033e099e29ecf7a738d62eaedffa78afb49aefd46bc9ca83082fbb5c5",
@@ -65,6 +77,18 @@ final class SHAKETest: XCTestCase {
         testStruct(
             seed: "0dc1",
             output: "8e2df9d379bb034aee064e965f960ebb418a9bb535025fb96427f678cf207877"
+        ),
+        testStruct(
+            seed: "587cb398fe82ffda",
+            output: "54f5dddb85f62dba7dc4727d502bdee959fb665bd482bd0ce31cbdd1a042e4b5"
+        ),
+        testStruct(
+            seed: "d6d82f4713267bff5a486c65be9943c628edd1bd9dc6",
+            output: "504f0f9e2c07a2ad8ad2e50723dcfc163119a7136e230f7986f1ec3fc73bc5af"
+        ),
+        testStruct(
+            seed: "39ec2245792f89b768d4873ba31143ea2df07431115d2381487db148dc421b214e3d7d4736b3d550",
+            output: "453d2167b544f02ed0d5d5a946ef0f0d306e5d95dfa5d48b3eb0485e43258b62"
         ),
         testStruct(
             seed: "999cd1673395cb04fc9bd7cd1eff8b4c0b3c0b6c113734de2ec51abc256eb56cd171d7c8ba07617be6ecb7aef21c71e561",

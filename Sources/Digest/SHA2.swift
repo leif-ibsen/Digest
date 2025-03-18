@@ -6,7 +6,7 @@
 //
 
 class SHA2_256: MDImplementation {
-    
+
     static let k: Words = [
         0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
         0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
@@ -16,15 +16,15 @@ class SHA2_256: MDImplementation {
         0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
         0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
         0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2 ]
-    
+
     var w: Words
     let sha224: Bool
-    
+
     init(_ sha224: Bool) {
         self.w = Words(repeating: 0, count: 64)
         self.sha224 = sha224
     }
-    
+
     func doReset(_ hw: inout Words, _ hl: inout Limbs) {
         assert(hl.count == 0)
         if self.sha224 {
@@ -47,54 +47,60 @@ class SHA2_256: MDImplementation {
             hw[7] = 0x5be0cd19
         }
     }
-    
+
     func doBuffer(_ buffer: inout Bytes, _ hw: inout Words, _ hl: inout Limbs) {
         assert(hl.count == 0)
-        for i in 0 ..< 16 {
-            let index = 4 * i
-            let w0 = Word(buffer[index]) << 24
-            let w1 = Word(buffer[index + 1]) << 16
-            let w2 = Word(buffer[index + 2]) << 8
-            let w3 = Word(buffer[index + 3])
-            self.w[i] = w0 | w1 | w2 | w3
+        self.w.withUnsafeMutableBufferPointer { wU in
+            buffer.withUnsafeMutableBufferPointer { bufferU in
+                for i in 0 ..< 16 {
+                    let index = 4 * i
+                    let w0 = Word(bufferU[index]) << 24
+                    let w1 = Word(bufferU[index + 1]) << 16
+                    let w2 = Word(bufferU[index + 2]) << 8
+                    let w3 = Word(bufferU[index + 3])
+                    wU[i] = w0 | w1 | w2 | w3
+                }
+                for i in 16 ..< 64 {
+                    wU[i] = SSIG1(wU[i - 2]) &+ wU[i - 7] &+ SSIG0(wU[i - 15]) &+ wU[i - 16]
+                }
+                hw.withUnsafeMutableBufferPointer { hwU in
+                    var a = hwU[0]
+                    var b = hwU[1]
+                    var c = hwU[2]
+                    var d = hwU[3]
+                    var e = hwU[4]
+                    var f = hwU[5]
+                    var g = hwU[6]
+                    var h = hwU[7]
+                    for i in 0 ..< 64 {
+                        let t1 = h &+ BSIG1(e) &+ CH(e, f, g) &+ SHA2_256.k[i] &+ wU[i]
+                        let t2 = BSIG0(a) &+ MAJ(a, b, c)
+                        h = g
+                        g = f
+                        f = e
+                        e = d &+ t1
+                        d = c
+                        c = b
+                        b = a
+                        a = t1 &+ t2
+                    }
+                    hwU[0] &+= a
+                    hwU[1] &+= b
+                    hwU[2] &+= c
+                    hwU[3] &+= d
+                    hwU[4] &+= e
+                    hwU[5] &+= f
+                    hwU[6] &+= g
+                    hwU[7] &+= h
+                }
+            }
         }
-        for i in 16 ..< 64 {
-            self.w[i] = SSIG1(self.w[i - 2]) &+ self.w[i - 7] &+ SSIG0(self.w[i - 15]) &+ self.w[i - 16]
-        }
-        var a = hw[0]
-        var b = hw[1]
-        var c = hw[2]
-        var d = hw[3]
-        var e = hw[4]
-        var f = hw[5]
-        var g = hw[6]
-        var h = hw[7]
-        for i in 0 ..< 64 {
-            let t1 = h &+ BSIG1(e) &+ CH(e, f, g) &+ SHA2_256.k[i] &+ self.w[i]
-            let t2 = BSIG0(a) &+ MAJ(a, b, c)
-            h = g
-            g = f
-            f = e
-            e = d &+ t1
-            d = c
-            c = b
-            b = a
-            a = t1 &+ t2
-        }
-        hw[0] &+= a
-        hw[1] &+= b
-        hw[2] &+= c
-        hw[3] &+= d
-        hw[4] &+= e
-        hw[5] &+= f
-        hw[6] &+= g
-        hw[7] &+= h
     }
-    
+
     func CH(_ x: Word, _ y: Word, _ z: Word) -> Word {
         return (x & y) ^ ((~x) & z)
     }
-    
+
     func MAJ(_ x: Word, _ y: Word, _ z: Word) -> Word {
         return (x & y) ^ (x & z) ^ (y & z)
     }
@@ -114,7 +120,7 @@ class SHA2_256: MDImplementation {
     func SSIG1(_ x: Word) -> Word {
         return SHA2_256.rotateRight(x, 17) ^ SHA2_256.rotateRight(x, 19) ^ (x >> 10)
     }
-    
+
     func padding(_ totalBytes: Int, _ blockSize: Int) -> Bytes {
         var l = totalBytes * 8
         let x = ((totalBytes + 8 + blockSize) / blockSize) * blockSize - totalBytes
@@ -137,7 +143,7 @@ class SHA2_256: MDImplementation {
         b[x - 8] = Byte(l & 0xff)
         return b
     }
-    
+
     static func rotateRight(_ x: Word, _ n: Int) -> Word {
         return (x >> n) | (x << (32 - n))
     }
@@ -145,7 +151,7 @@ class SHA2_256: MDImplementation {
 }
 
 class SHA2_512: MDImplementation {
-    
+
     static let k: Limbs = [
         0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
         0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
@@ -167,15 +173,15 @@ class SHA2_512: MDImplementation {
         0x06f067aa72176fba, 0x0a637dc5a2c898a6, 0x113f9804bef90dae, 0x1b710b35131c471b,
         0x28db77f523047d84, 0x32caab7b40c72493, 0x3c9ebe0a15c9bebc, 0x431d67c49c100d4c,
         0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817 ]
-    
+
     var l: Limbs
     let sha384: Bool
-    
+
     init(_ sha384: Bool) {
         self.l = Limbs(repeating: 0, count: 80)
         self.sha384 = sha384
     }
-    
+
     func doReset(_ hw: inout Words, _ hl: inout Limbs) {
         assert(hw.count == 0)
         if self.sha384 {
@@ -198,54 +204,61 @@ class SHA2_512: MDImplementation {
             hl[7] = 0x5be0cd19137e2179
         }
     }
-    
+
     func doBuffer(_ buffer: inout Bytes, _ hw: inout Words, _ hl: inout Limbs) {
         assert(hw.count == 0)
-        for i in 0 ..< 16 {
-            let index = 8 * i
-            let l0 = Limb(buffer[index]) << 56
-            let l1 = Limb(buffer[index + 1]) << 48
-            let l2 = Limb(buffer[index + 2]) << 40
-            let l3 = Limb(buffer[index + 3]) << 32
-            let l4 = Limb(buffer[index + 4]) << 24
-            let l5 = Limb(buffer[index + 5]) << 16
-            let l6 = Limb(buffer[index + 6]) << 8
-            let l7 = Limb(buffer[index + 7])
-            self.l[i] = l0 | l1 | l2 | l3 | l4 | l5 | l6 | l7
+        self.l.withUnsafeMutableBufferPointer { lU in
+            buffer.withUnsafeMutableBufferPointer { bufferU in
+                for i in 0 ..< 16 {
+                    let index = 8 * i
+                    let l0 = Limb(bufferU[index]) << 56
+                    let l1 = Limb(bufferU[index + 1]) << 48
+                    let l2 = Limb(bufferU[index + 2]) << 40
+                    let l3 = Limb(bufferU[index + 3]) << 32
+                    let l4 = Limb(bufferU[index + 4]) << 24
+                    let l5 = Limb(bufferU[index + 5]) << 16
+                    let l6 = Limb(bufferU[index + 6]) << 8
+                    let l7 = Limb(bufferU[index + 7])
+                    lU[i] = l0 | l1 | l2 | l3 | l4 | l5 | l6 | l7
+                }
+                for i in 16 ..< 80 {
+                    lU[i] =
+                    SSIG1(lU[i - 2]) &+ lU[i - 7] &+ SSIG0(lU[i - 15]) &+ lU[i - 16]
+                }
+                hl.withUnsafeMutableBufferPointer { hlU in
+                    var a = hlU[0]
+                    var b = hlU[1]
+                    var c = hlU[2]
+                    var d = hlU[3]
+                    var e = hlU[4]
+                    var f = hlU[5]
+                    var g = hlU[6]
+                    var h = hlU[7]
+                    for i in 0 ..< 80 {
+                        let t1 = h &+ BSIG1(e) &+ CH(e, f, g) &+ SHA2_512.k[i] &+ lU[i]
+                        let t2 = BSIG0(a) &+ MAJ(a, b, c)
+                        h = g
+                        g = f
+                        f = e
+                        e = d &+ t1
+                        d = c
+                        c = b
+                        b = a
+                        a = t1 &+ t2
+                    }
+                    hlU[0] &+= a
+                    hlU[1] &+= b
+                    hlU[2] &+= c
+                    hlU[3] &+= d
+                    hlU[4] &+= e
+                    hlU[5] &+= f
+                    hlU[6] &+= g
+                    hlU[7] &+= h
+                }
+            }
         }
-        for i in 16 ..< 80 {
-            self.l[i] = SSIG1(self.l[i - 2]) &+ self.l[i - 7] &+ SSIG0(self.l[i - 15]) &+ self.l[i - 16]
-        }
-        var a = hl[0]
-        var b = hl[1]
-        var c = hl[2]
-        var d = hl[3]
-        var e = hl[4]
-        var f = hl[5]
-        var g = hl[6]
-        var h = hl[7]
-        for i in 0 ..< 80 {
-            let t1 = h &+ BSIG1(e) &+ CH(e, f, g) &+ SHA2_512.k[i] &+ self.l[i]
-            let t2 = BSIG0(a) &+ MAJ(a, b, c)
-            h = g
-            g = f
-            f = e
-            e = d &+ t1
-            d = c
-            c = b
-            b = a
-            a = t1 &+ t2
-        }
-        hl[0] &+= a
-        hl[1] &+= b
-        hl[2] &+= c
-        hl[3] &+= d
-        hl[4] &+= e
-        hl[5] &+= f
-        hl[6] &+= g
-        hl[7] &+= h
     }
-    
+
     func CH(_ x: Limb, _ y: Limb, _ z: Limb) -> Limb {
         return (x & y) ^ ((~x) & z)
     }
@@ -257,19 +270,19 @@ class SHA2_512: MDImplementation {
     func BSIG0(_ x: Limb) -> Limb {
         return SHA2_512.rotateRight(x, 28) ^ SHA2_512.rotateRight(x, 34) ^ SHA2_512.rotateRight(x, 39)
     }
-    
+
     func BSIG1(_ x: Limb) -> Limb {
         return SHA2_512.rotateRight(x, 14) ^ SHA2_512.rotateRight(x, 18) ^ SHA2_512.rotateRight(x, 41)
     }
-    
+
     func SSIG0(_ x: Limb) -> Limb {
         return SHA2_512.rotateRight(x, 1) ^ SHA2_512.rotateRight(x, 8) ^ (x >> 7)
     }
-    
+
     func SSIG1(_ x: Limb) -> Limb {
         return SHA2_512.rotateRight(x, 19) ^ SHA2_512.rotateRight(x, 61) ^ (x >> 6)
     }
-    
+
     func padding(_ totalBytes: Int, _ blockSize: Int) -> Bytes {
         var l = totalBytes * 8
         let x = ((totalBytes + 16 + blockSize) / blockSize) * blockSize - totalBytes
@@ -292,7 +305,7 @@ class SHA2_512: MDImplementation {
         b[x - 8] = Byte(l & 0xff)
         return b
     }
-    
+
     static func rotateRight(_ x: Limb, _ n: Int) -> Limb {
         return (x >> n) | (x << (64 - n))
     }

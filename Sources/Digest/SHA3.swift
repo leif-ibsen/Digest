@@ -8,10 +8,10 @@
 class SHA3: MDImplementation {
     
     let RC_CONSTANTS: Limbs = [
-    0x01, 0x8082, 0x800000000000808a, 0x8000000080008000, 0x808b, 0x80000001, 0x8000000080008081,
-    0x8000000000008009, 0x8a, 0x88, 0x80008009, 0x8000000a, 0x8000808b, 0x800000000000008b,
-    0x8000000000008089, 0x8000000000008003, 0x8000000000008002, 0x8000000000000080, 0x800a,
-    0x800000008000000a, 0x8000000080008081, 0x8000000000008080, 0x80000001, 0x8000000080008008]
+    0x0000000000000001, 0x0000000000008082, 0x800000000000808a, 0x8000000080008000, 0x000000000000808b, 0x0000000080000001,
+    0x8000000080008081, 0x8000000000008009, 0x000000000000008a, 0x0000000000000088, 0x0000000080008009, 0x000000008000000a,
+    0x000000008000808b, 0x800000000000008b, 0x8000000000008089, 0x8000000000008003, 0x8000000000008002, 0x8000000000000080,
+    0x000000000000800a, 0x800000008000000a, 0x8000000080008081, 0x8000000000008080, 0x0000000080000001, 0x8000000080008008 ]
 
     var state: Bytes
     var lanes: Limbs
@@ -27,108 +27,196 @@ class SHA3: MDImplementation {
         self.state = Bytes(repeating: 0, count: 200)
     }
     
-    func toLanes(_ buffer: Bytes) {
-        for y in 0 ..< 5 {
-            for x in 0 ..< 5 {
-                var b = Limb(0)
-                for i in 0 ..< 8 {
-                    b |= Limb(buffer[8 * (5 * y + x) + i]) << (i * 8)
+    func toLanes(_ buffer: inout Bytes) {
+        self.lanes.withUnsafeMutableBufferPointer { lanesU in
+            buffer.withUnsafeMutableBufferPointer { bufferU in
+                for y in 0 ..< 5 {
+                    for x in 0 ..< 5 {
+                        var b = Limb(0)
+                        let nyx = 8 * (5 * y + x)
+                        b |= Limb(bufferU[nyx])
+                        b |= Limb(bufferU[nyx + 1]) << 8
+                        b |= Limb(bufferU[nyx + 2]) << 16
+                        b |= Limb(bufferU[nyx + 3]) << 24
+                        b |= Limb(bufferU[nyx + 4]) << 32
+                        b |= Limb(bufferU[nyx + 5]) << 40
+                        b |= Limb(bufferU[nyx + 6]) << 48
+                        b |= Limb(bufferU[nyx + 7]) << 56
+                        lanesU[5 * y + x] = b
+                    }
                 }
-                self.lanes[5 * y + x] = b
             }
         }
     }
-    
+
     func fromLanes(_ buffer: inout Bytes) {
-        for y in 0 ..< 5 {
-            for x in 0 ..< 5 {
-                var b = self.lanes[5 * y + x]
-                for i in 0 ..< 8 {
-                    buffer[8 * (5 * y + x) + i] = Byte(b & 0xff)
-                    b >>= 8
+        self.lanes.withUnsafeMutableBufferPointer { lanesU in
+            buffer.withUnsafeMutableBufferPointer { bufferU in
+                for y in 0 ..< 5 {
+                    for x in 0 ..< 5 {
+                        var b = lanesU[5 * y + x]
+                        let nyx = 8 * (5 * y + x)
+                        bufferU[nyx] = Byte(b & 0xff)
+                        b >>= 8
+                        bufferU[nyx + 1] = Byte(b & 0xff)
+                        b >>= 8
+                        bufferU[nyx + 2] = Byte(b & 0xff)
+                        b >>= 8
+                        bufferU[nyx + 3] = Byte(b & 0xff)
+                        b >>= 8
+                        bufferU[nyx + 4] = Byte(b & 0xff)
+                        b >>= 8
+                        bufferU[nyx + 5] = Byte(b & 0xff)
+                        b >>= 8
+                        bufferU[nyx + 6] = Byte(b & 0xff)
+                        b >>= 8
+                        bufferU[nyx + 7] = Byte(b & 0xff)
+                        b >>= 8
+                    }
                 }
             }
         }
     }
-    
+
     func doBuffer(_ buffer: inout Bytes, _ hw: inout Words, _ hl: inout Limbs) {
         assert(hw.count == 0)
         assert(hl.count == 0)
-        toLanes(buffer)
+        toLanes(&buffer)
         for i in 0 ..< 24 {
             theta()
             phiRho()
             chi()
-            iota(i)
+            
+            // iota(i)
+            
+            self.lanes[0] ^= RC_CONSTANTS[i]
         }
         fromLanes(&buffer)
     }
     
     func theta() {
-        let c0 = self.lanes[0] ^ self.lanes[5] ^ self.lanes[10] ^ self.lanes[15] ^ self.lanes[20]
-        let c1 = self.lanes[1] ^ self.lanes[6] ^ self.lanes[11] ^ self.lanes[16] ^ self.lanes[21]
-        let c2 = self.lanes[2] ^ self.lanes[7] ^ self.lanes[12] ^ self.lanes[17] ^ self.lanes[22]
-        let c3 = self.lanes[3] ^ self.lanes[8] ^ self.lanes[13] ^ self.lanes[18] ^ self.lanes[23]
-        let c4 = self.lanes[4] ^ self.lanes[9] ^ self.lanes[14] ^ self.lanes[19] ^ self.lanes[24]
-        let d0 = c4 ^ SHA3.rotateLeft(c1, 1)
-        let d1 = c0 ^ SHA3.rotateLeft(c2, 1)
-        let d2 = c1 ^ SHA3.rotateLeft(c3, 1)
-        let d3 = c2 ^ SHA3.rotateLeft(c4, 1)
-        let d4 = c3 ^ SHA3.rotateLeft(c0, 1)
-        for y in stride(from: 0, through: 20, by: 5) {
-            self.lanes[y] ^= d0
-            self.lanes[y + 1] ^= d1
-            self.lanes[y + 2] ^= d2
-            self.lanes[y + 3] ^= d3
-            self.lanes[y + 4] ^= d4
+        self.lanes.withUnsafeMutableBufferPointer { lanesU in
+            let c0 = lanesU[0] ^ lanesU[5] ^ lanesU[10] ^ lanesU[15] ^ lanesU[20]
+            let c1 = lanesU[1] ^ lanesU[6] ^ lanesU[11] ^ lanesU[16] ^ lanesU[21]
+            let c2 = lanesU[2] ^ lanesU[7] ^ lanesU[12] ^ lanesU[17] ^ lanesU[22]
+            let c3 = lanesU[3] ^ lanesU[8] ^ lanesU[13] ^ lanesU[18] ^ lanesU[23]
+            let c4 = lanesU[4] ^ lanesU[9] ^ lanesU[14] ^ lanesU[19] ^ lanesU[24]
+            let d0 = c4 ^ SHA3.rotateLeft(c1, 1)
+            let d1 = c0 ^ SHA3.rotateLeft(c2, 1)
+            let d2 = c1 ^ SHA3.rotateLeft(c3, 1)
+            let d3 = c2 ^ SHA3.rotateLeft(c4, 1)
+            let d4 = c3 ^ SHA3.rotateLeft(c0, 1)
+            lanesU[0] ^= d0
+            lanesU[1] ^= d1
+            lanesU[2] ^= d2
+            lanesU[3] ^= d3
+            lanesU[4] ^= d4
+            lanesU[5] ^= d0
+            lanesU[6] ^= d1
+            lanesU[7] ^= d2
+            lanesU[8] ^= d3
+            lanesU[9] ^= d4
+            lanesU[10] ^= d0
+            lanesU[11] ^= d1
+            lanesU[12] ^= d2
+            lanesU[13] ^= d3
+            lanesU[14] ^= d4
+            lanesU[15] ^= d0
+            lanesU[16] ^= d1
+            lanesU[17] ^= d2
+            lanesU[18] ^= d3
+            lanesU[19] ^= d4
+            lanesU[20] ^= d0
+            lanesU[21] ^= d1
+            lanesU[22] ^= d2
+            lanesU[23] ^= d3
+            lanesU[24] ^= d4
         }
     }
-    
+
     func phiRho() {
-        let tmp = SHA3.rotateLeft(self.lanes[10], 3)
-        self.lanes[10] = SHA3.rotateLeft(self.lanes[1], 1)
-        self.lanes[1] = SHA3.rotateLeft(self.lanes[6], 44)
-        self.lanes[6] = SHA3.rotateLeft(self.lanes[9], 20)
-        self.lanes[9] = SHA3.rotateLeft(self.lanes[22], 61)
-        self.lanes[22] = SHA3.rotateLeft(self.lanes[14], 39)
-        self.lanes[14] = SHA3.rotateLeft(self.lanes[20], 18)
-        self.lanes[20] = SHA3.rotateLeft(self.lanes[2], 62)
-        self.lanes[2] = SHA3.rotateLeft(self.lanes[12], 43)
-        self.lanes[12] = SHA3.rotateLeft(self.lanes[13], 25)
-        self.lanes[13] = SHA3.rotateLeft(self.lanes[19], 8)
-        self.lanes[19] = SHA3.rotateLeft(self.lanes[23], 56)
-        self.lanes[23] = SHA3.rotateLeft(self.lanes[15], 41)
-        self.lanes[15] = SHA3.rotateLeft(self.lanes[4], 27)
-        self.lanes[4] = SHA3.rotateLeft(self.lanes[24], 14)
-        self.lanes[24] = SHA3.rotateLeft(self.lanes[21], 2)
-        self.lanes[21] = SHA3.rotateLeft(self.lanes[8], 55)
-        self.lanes[8] = SHA3.rotateLeft(self.lanes[16], 45)
-        self.lanes[16] = SHA3.rotateLeft(self.lanes[5], 36)
-        self.lanes[5] = SHA3.rotateLeft(self.lanes[3], 28)
-        self.lanes[3] = SHA3.rotateLeft(self.lanes[18], 21)
-        self.lanes[18] = SHA3.rotateLeft(self.lanes[17], 15)
-        self.lanes[17] = SHA3.rotateLeft(self.lanes[11], 10)
-        self.lanes[11] = SHA3.rotateLeft(self.lanes[7], 6)
-        self.lanes[7] = tmp
-    }
-    
-    func chi() {
-        for y in stride(from: 0, through: 20, by: 5) {
-            let ay0 = self.lanes[y]
-            let ay1 = self.lanes[y + 1]
-            let ay2 = self.lanes[y + 2]
-            let ay3 = self.lanes[y + 3]
-            let ay4 = self.lanes[y + 4]
-            self.lanes[y] = ay0 ^ ((~ay1) & ay2)
-            self.lanes[y + 1] = ay1 ^ ((~ay2) & ay3)
-            self.lanes[y + 2] = ay2 ^ ((~ay3) & ay4)
-            self.lanes[y + 3] = ay3 ^ ((~ay4) & ay0)
-            self.lanes[y + 4] = ay4 ^ ((~ay0) & ay1)
+        self.lanes.withUnsafeMutableBufferPointer { lanesU in
+            let tmp = SHA3.rotateLeft(lanesU[10], 3)
+            lanesU[10] = SHA3.rotateLeft(lanesU[1], 1)
+            lanesU[1] = SHA3.rotateLeft(lanesU[6], 44)
+            lanesU[6] = SHA3.rotateLeft(lanesU[9], 20)
+            lanesU[9] = SHA3.rotateLeft(lanesU[22], 61)
+            lanesU[22] = SHA3.rotateLeft(lanesU[14], 39)
+            lanesU[14] = SHA3.rotateLeft(lanesU[20], 18)
+            lanesU[20] = SHA3.rotateLeft(lanesU[2], 62)
+            lanesU[2] = SHA3.rotateLeft(lanesU[12], 43)
+            lanesU[12] = SHA3.rotateLeft(lanesU[13], 25)
+            lanesU[13] = SHA3.rotateLeft(lanesU[19], 8)
+            lanesU[19] = SHA3.rotateLeft(lanesU[23], 56)
+            lanesU[23] = SHA3.rotateLeft(lanesU[15], 41)
+            lanesU[15] = SHA3.rotateLeft(lanesU[4], 27)
+            lanesU[4] = SHA3.rotateLeft(lanesU[24], 14)
+            lanesU[24] = SHA3.rotateLeft(lanesU[21], 2)
+            lanesU[21] = SHA3.rotateLeft(lanesU[8], 55)
+            lanesU[8] = SHA3.rotateLeft(lanesU[16], 45)
+            lanesU[16] = SHA3.rotateLeft(lanesU[5], 36)
+            lanesU[5] = SHA3.rotateLeft(lanesU[3], 28)
+            lanesU[3] = SHA3.rotateLeft(lanesU[18], 21)
+            lanesU[18] = SHA3.rotateLeft(lanesU[17], 15)
+            lanesU[17] = SHA3.rotateLeft(lanesU[11], 10)
+            lanesU[11] = SHA3.rotateLeft(lanesU[7], 6)
+            lanesU[7] = tmp
         }
     }
-    
-    func iota(_ r: Int) {
-        self.lanes[0] ^= RC_CONSTANTS[r]
+
+    func chi() {
+        self.lanes.withUnsafeMutableBufferPointer { lanesU in
+            var ay0 = lanesU[0]
+            var ay1 = lanesU[1]
+            var ay2 = lanesU[2]
+            var ay3 = lanesU[3]
+            var ay4 = lanesU[4]
+            lanesU[0] = ay0 ^ ((~ay1) & ay2)
+            lanesU[1] = ay1 ^ ((~ay2) & ay3)
+            lanesU[2] = ay2 ^ ((~ay3) & ay4)
+            lanesU[3] = ay3 ^ ((~ay4) & ay0)
+            lanesU[4] = ay4 ^ ((~ay0) & ay1)
+            ay0 = lanesU[5]
+            ay1 = lanesU[6]
+            ay2 = lanesU[7]
+            ay3 = lanesU[8]
+            ay4 = lanesU[9]
+            lanesU[5] = ay0 ^ ((~ay1) & ay2)
+            lanesU[6] = ay1 ^ ((~ay2) & ay3)
+            lanesU[7] = ay2 ^ ((~ay3) & ay4)
+            lanesU[8] = ay3 ^ ((~ay4) & ay0)
+            lanesU[9] = ay4 ^ ((~ay0) & ay1)
+            ay0 = lanesU[10]
+            ay1 = lanesU[11]
+            ay2 = lanesU[12]
+            ay3 = lanesU[13]
+            ay4 = lanesU[14]
+            lanesU[10] = ay0 ^ ((~ay1) & ay2)
+            lanesU[11] = ay1 ^ ((~ay2) & ay3)
+            lanesU[12] = ay2 ^ ((~ay3) & ay4)
+            lanesU[13] = ay3 ^ ((~ay4) & ay0)
+            lanesU[14] = ay4 ^ ((~ay0) & ay1)
+            ay0 = lanesU[15]
+            ay1 = lanesU[16]
+            ay2 = lanesU[17]
+            ay3 = lanesU[18]
+            ay4 = lanesU[19]
+            lanesU[15] = ay0 ^ ((~ay1) & ay2)
+            lanesU[16] = ay1 ^ ((~ay2) & ay3)
+            lanesU[17] = ay2 ^ ((~ay3) & ay4)
+            lanesU[18] = ay3 ^ ((~ay4) & ay0)
+            lanesU[19] = ay4 ^ ((~ay0) & ay1)
+            ay0 = lanesU[20]
+            ay1 = lanesU[21]
+            ay2 = lanesU[22]
+            ay3 = lanesU[23]
+            ay4 = lanesU[24]
+            lanesU[20] = ay0 ^ ((~ay1) & ay2)
+            lanesU[21] = ay1 ^ ((~ay2) & ay3)
+            lanesU[22] = ay2 ^ ((~ay3) & ay4)
+            lanesU[23] = ay3 ^ ((~ay4) & ay0)
+            lanesU[24] = ay4 ^ ((~ay0) & ay1)
+        }
     }
 
     func padding(_ totalBytes: Int, _ blockSize: Int) -> Bytes {
